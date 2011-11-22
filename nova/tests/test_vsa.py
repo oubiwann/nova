@@ -27,10 +27,10 @@ from nova import log as logging
 from nova import test
 from nova import vsa
 from nova import volume
+from nova.testing import fake
 from nova.volume import volume_types
 from nova.vsa import utils as vsa_utils
 
-import nova.image.fake
 
 FLAGS = flags.FLAGS
 LOG = logging.getLogger('nova.tests.vsa')
@@ -63,7 +63,7 @@ class VsaTestCase(test.TestCase):
                 raise exception.ImageNotFound
             return {'id': 1, 'properties': {'kernel_id': 1, 'ramdisk_id': 1}}
 
-        self.stubs.Set(nova.image.fake._FakeImageService,
+        self.stubs.Set(fake.image._FakeImageService,
                         'show_by_name',
                         fake_show_by_name)
 
@@ -104,7 +104,7 @@ class VsaTestCase(test.TestCase):
             LOG.debug(_("Test: Emulate DB error. Raise"))
             raise exception.Error
 
-        self.stubs.Set(nova.db, 'vsa_create', fake_vsa_create)
+        self.stubs.Set(db, 'vsa_create', fake_vsa_create)
         self.assertRaises(exception.ApiError,
                           self.vsa_api.create, self.context)
 

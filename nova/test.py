@@ -38,7 +38,7 @@ import nova.image.fake
 from nova import log
 from nova import utils
 from nova import service
-from nova.testing.fake import rabbit
+from nova.testing.fake import image, rabbit
 from nova.virt import fake
 
 
@@ -146,8 +146,8 @@ class TestCase(unittest.TestCase):
                 if hasattr(fake.FakeConnection, '_instance'):
                     del fake.FakeConnection._instance
 
-            if FLAGS.image_service == 'nova.image.fake.FakeImageService':
-                nova.image.fake.FakeImageService_reset()
+            if FLAGS.image_service == 'nova.testing.fake.image.FakeImageService':
+                image.FakeImageService_reset()
 
             # Reset any overridden flags
             self.reset_flags()

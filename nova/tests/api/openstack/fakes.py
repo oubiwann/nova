@@ -38,7 +38,7 @@ from nova.compute import vm_states
 from nova import context
 from nova.db.sqlalchemy import models
 from nova import exception as exc
-import nova.image.fake
+from nova.testing import fake
 from nova.tests.glance import stubs as glance_stubs
 from nova import utils
 from nova import wsgi
@@ -127,10 +127,10 @@ def stub_out_key_pair_funcs(stubs, have_key_pair=True):
 
 def stub_out_image_service(stubs):
     def fake_get_image_service(context, image_href):
-        return (nova.image.fake.FakeImageService(), image_href)
+        return (fake.image.FakeImageService(), image_href)
     stubs.Set(nova.image, 'get_image_service', fake_get_image_service)
     stubs.Set(nova.image, 'get_default_image_service',
-        lambda: nova.image.fake.FakeImageService())
+        lambda: fake.image.FakeImageService())
 
 
 def stub_out_auth(stubs):

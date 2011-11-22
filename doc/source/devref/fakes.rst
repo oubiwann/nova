@@ -1,6 +1,6 @@
 ..
       Copyright 2010-2011 United States Government as represented by the
-      Administrator of the National Aeronautics and Space Administration. 
+      Administrator of the National Aeronautics and Space Administration.
       All Rights Reserved.
 
       Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -34,15 +34,15 @@ The :mod:`nova.virt.fake` Module
     :show-inheritance:
 
 
-The :mod:`nova.auth.fakeldap` Module
+The :mod:`nova.testing.fake.ldap` Module
 ------------------------------------
 
-.. automodule:: nova.auth.fakeldap
+.. automodule:: nova.testing.fake.ldap
     :noindex:
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 
 The :mod:`nova.testing.fake.rabbit` Module
 ---------------------------------

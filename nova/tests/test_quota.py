@@ -341,7 +341,7 @@ class QuotaTestCase(test.TestCase):
         self.assertEqual(limit, 23456)
 
     def _create_with_injected_files(self, files):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
         api = compute.API(image_service=self.StubImageService())
         inst_type = instance_types.get_instance_type_by_name('m1.small')
         image_uuid = 'cedef40a-ed67-4d10-800e-17455edce175'
@@ -350,7 +350,7 @@ class QuotaTestCase(test.TestCase):
                 injected_files=files)
 
     def test_no_injected_files(self):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
         api = compute.API(image_service=self.StubImageService())
         inst_type = instance_types.get_instance_type_by_name('m1.small')
         image_uuid = 'cedef40a-ed67-4d10-800e-17455edce175'

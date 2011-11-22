@@ -24,20 +24,20 @@ import os
 from M2Crypto import BIO
 from M2Crypto import RSA
 
-from nova.api.ec2 import cloud
-from nova.api.ec2 import ec2utils
-from nova.compute import vm_states
 from nova import context
 from nova import crypto
 from nova import db
 from nova import exception
 from nova import flags
-from nova.image import fake
 from nova import log as logging
 from nova import manager
 from nova import rpc
 from nova import test
 from nova import utils
+from nova.api.ec2 import cloud
+from nova.api.ec2 import ec2utils
+from nova.compute import vm_states
+from nova.testing import fake
 
 
 FLAGS = flags.FLAGS
@@ -116,8 +116,8 @@ class CloudTestCase(test.TestCase):
                         'type': 'machine',
                         'image_state': 'available'}}
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'show_by_name', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show_by_name', fake_show)
 
         # NOTE(comstud): Make 'cast' behave like a 'call' which will
         # ensure that operations complete
@@ -840,7 +840,7 @@ class CloudTestCase(test.TestCase):
         def fake_show_none(meh, context, id):
             raise exception.ImageNotFound(image_id='bad_image_id')
 
-        self.stubs.Set(fake._FakeImageService, 'detail', fake_detail)
+        self.stubs.Set(fake.image._FakeImageService, 'detail', fake_detail)
         # list all
         result1 = describe_images(self.context)
         result1 = result1['imagesSet'][0]
@@ -854,8 +854,9 @@ class CloudTestCase(test.TestCase):
         self.assertEqual(2, len(result3['imagesSet']))
         # provide an non-existing image_id
         self.stubs.UnsetAll()
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show_none)
-        self.stubs.Set(fake._FakeImageService, 'show_by_name', fake_show_none)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show_none)
+        self.stubs.Set(fake.image._FakeImageService, 'show_by_name',
+                       fake_show_none)
         self.assertRaises(exception.ImageNotFound, describe_images,
                           self.context, ['ami-fake'])
 
@@ -926,8 +927,8 @@ class CloudTestCase(test.TestCase):
         def fake_detail(meh, context):
             return [copy.deepcopy(image1), copy.deepcopy(image2)]
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'detail', fake_detail)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'detail', fake_detail)
 
         volumes = []
         snapshots = []
@@ -1025,8 +1026,8 @@ class CloudTestCase(test.TestCase):
                     'container_format': 'ami',
                     'is_public': True}
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'show_by_name', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show_by_name', fake_show)
         result = describe_image_attribute(self.context, 'ami-00000001',
                                           'launchPermission')
         self.assertEqual([{'group': 'all'}], result['launchPermission'])
@@ -1076,9 +1077,9 @@ class CloudTestCase(test.TestCase):
             fake_metadata.update(metadata)
             return fake_metadata
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'show_by_name', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'update', fake_update)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show_by_name', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'update', fake_update)
         result = modify_image_attribute(self.context, 'ami-00000001',
                                           'launchPermission', 'add',
                                            user_group=['all'])
@@ -1090,7 +1091,7 @@ class CloudTestCase(test.TestCase):
         def fake_delete(self, context, id):
             return None
 
-        self.stubs.Set(fake._FakeImageService, 'delete', fake_delete)
+        self.stubs.Set(fake.image._FakeImageService, 'delete', fake_delete)
         # valid image
         result = deregister_image(self.context, 'ami-00000001')
         self.assertEqual(result['imageId'], 'ami-00000001')
@@ -1100,7 +1101,8 @@ class CloudTestCase(test.TestCase):
         def fake_detail_empty(self, context):
             return []
 
-        self.stubs.Set(fake._FakeImageService, 'detail', fake_detail_empty)
+        self.stubs.Set(fake.image._FakeImageService, 'detail',
+                       fake_detail_empty)
         self.assertRaises(exception.ImageNotFound, deregister_image,
                           self.context, 'ami-bad001')
 
@@ -1110,7 +1112,7 @@ class CloudTestCase(test.TestCase):
         def fake_delete(self, context, id):
             return None
 
-        self.stubs.Set(fake._FakeImageService, 'delete', fake_delete)
+        self.stubs.Set(fake.image._FakeImageService, 'delete', fake_delete)
         self.assertRaises(exception.NotFound, deregister_image, self.context,
                           'aki-00000001')
 
@@ -1204,7 +1206,7 @@ class CloudTestCase(test.TestCase):
                     'status': 'active'}
 
         self.stubs.UnsetAll()
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
         # NOTE(comstud): Make 'cast' behave like a 'call' which will
         # ensure that operations complete
         self.stubs.Set(rpc, 'cast', rpc.call)
@@ -1233,7 +1235,7 @@ class CloudTestCase(test.TestCase):
                     'container_format': 'ami',
                     'status': 'active'}
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
         # NOTE(comstud): Make 'cast' behave like a 'call' which will
         # ensure that operations complete
         self.stubs.Set(rpc, 'cast', rpc.call)
@@ -1266,7 +1268,7 @@ class CloudTestCase(test.TestCase):
                     'type': 'machine'}, 'container_format': 'ami'}
 
         self.stubs.UnsetAll()
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show_no_state)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show_no_state)
         self.assertRaises(exception.ApiError, run_instances,
                           self.context, **kwargs)
 
@@ -1285,7 +1287,7 @@ class CloudTestCase(test.TestCase):
                     'type': 'machine', 'image_state': 'decrypting'}}
 
         self.stubs.UnsetAll()
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show_decrypt)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show_decrypt)
         self.assertRaises(exception.ApiError, run_instances,
                           self.context, **kwargs)
 
@@ -1304,7 +1306,8 @@ class CloudTestCase(test.TestCase):
                         'type': 'machine'},
                     'status': 'active'}
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show_stat_active)
+        self.stubs.Set(fake.image._FakeImageService, 'show',
+                       fake_show_stat_active)
 
         result = run_instances(self.context, **kwargs)
         self.assertEqual(len(result['instancesSet']), 1)

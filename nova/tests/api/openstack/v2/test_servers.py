@@ -35,7 +35,8 @@ import nova.db
 from nova.db.sqlalchemy.models import InstanceActions
 from nova.db.sqlalchemy.models import InstanceMetadata
 from nova import flags
-import nova.image.fake
+# XXX this can be removed, right? (oubiwann)
+#import nova.image.fake
 import nova.rpc
 import nova.scheduler.api
 from nova import test

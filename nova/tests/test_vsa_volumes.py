@@ -23,7 +23,7 @@ from nova import db
 from nova import context
 from nova import test
 from nova import log as logging
-import nova.image.fake
+from nova.testing import fake
 
 FLAGS = flags.FLAGS
 LOG = logging.getLogger('nova.tests.vsa.volumes')
@@ -43,7 +43,7 @@ class VsaVolumesTestCase(test.TestCase):
         def fake_show_by_name(meh, context, name):
             return {'id': 1, 'properties': {'kernel_id': 1, 'ramdisk_id': 1}}
 
-        self.stubs.Set(nova.image.fake._FakeImageService,
+        self.stubs.Set(fake.image._FakeImageService,
                         'show_by_name',
                         fake_show_by_name)
 

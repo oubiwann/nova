@@ -62,7 +62,7 @@ ami_manifest_xml = """<?xml version="1.0" ?>
 class TestS3ImageService(test.TestCase):
     def setUp(self):
         super(TestS3ImageService, self).setUp()
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
         self.image_service = s3.S3ImageService()
         self.context = context.RequestContext(None, None)
 

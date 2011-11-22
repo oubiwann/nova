@@ -26,7 +26,7 @@ from nova import rpc
 from nova import test
 from nova import utils
 from nova.api.ec2 import admin
-from nova.image import fake
+from nova.testing import fake
 
 
 FLAGS = flags.FLAGS
@@ -58,8 +58,8 @@ class AdminApiTestCase(test.TestCase):
             return {'id': 1, 'properties': {'kernel_id': 1, 'ramdisk_id': 1,
                     'type': 'machine', 'image_state': 'available'}}
 
-        self.stubs.Set(fake._FakeImageService, 'show', fake_show)
-        self.stubs.Set(fake._FakeImageService, 'show_by_name', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show_by_name', fake_show)
 
         # NOTE(comstud): Make 'cast' behave like a 'call' which will
         # ensure that operations complete

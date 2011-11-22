@@ -35,7 +35,7 @@ class ConsoleTestCase(test.TestCase):
     """Test case for console proxy"""
     def setUp(self):
         super(ConsoleTestCase, self).setUp()
-        self.flags(console_driver='nova.console.fake.FakeConsoleProxy',
+        self.flags(console_driver='nova.testing.fake.console.FakeConsoleProxy',
                    stub_compute=True)
         self.console = utils.import_object(FLAGS.console_manager)
         self.user_id = 'fake'

@@ -25,10 +25,10 @@ from nova import context
 from nova import test
 from nova import log as logging
 from nova import utils
-import nova.image.fake
 from nova.compute import utils as compute_utils
 from nova.compute import instance_types
 from nova.notifier import test_notifier
+from nova.testing import fake
 
 
 LOG = logging.getLogger('nova.tests.compute_utils')
@@ -53,7 +53,7 @@ class UsageInfoTestCase(test.TestCase):
         def fake_show(meh, context, id):
             return {'id': 1, 'properties': {'kernel_id': 1, 'ramdisk_id': 1}}
 
-        self.stubs.Set(nova.image.fake._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
 
     def _create_instance(self, params={}):
         """Create a test instance"""

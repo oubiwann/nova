@@ -29,24 +29,24 @@ import webob.exc
 
 import nova
 from nova import compute
+from nova import context
+from nova import db
+from nova import exception
+from nova import flags
+from nova import log as logging
+from nova import rpc
+from nova import test
+from nova import utils
 from nova.compute import instance_types
 from nova.compute import manager as compute_manager
 from nova.compute import power_state
 from nova.compute import task_states
 from nova.compute import vm_states
-from nova import context
-from nova import db
-from nova import exception
-from nova import flags
-from nova.image import fake as fake_image
-from nova import log as logging
 from nova.network.quantum import client as quantum_client
 from nova.notifier import test_notifier
 from nova.scheduler import driver as scheduler_driver
-from nova import rpc
-from nova import test
+from nova.testing import fake
 from nova.tests import fake_network
-from nova import utils
 import nova.volume
 
 
@@ -120,7 +120,7 @@ class BaseTestCase(test.TestCase):
             return {'id': 1, 'min_disk': None, 'min_ram': None,
                     'properties': {'kernel_id': 1, 'ramdisk_id': 1}}
 
-        self.stubs.Set(fake_image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
         self.stubs.Set(rpc, 'call', rpc_call_wrapper)
         self.stubs.Set(rpc, 'cast', rpc_cast_wrapper)
 
@@ -1366,7 +1366,7 @@ class ComputeAPITestCase(BaseTestCase):
             img = copy(self.fake_image)
             img['min_ram'] = 2
             return img
-        self.stubs.Set(fake_image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
 
         self.assertRaises(exception.InstanceTypeMemoryTooSmall,
             self.compute_api.create, self.context, inst_type, None)
@@ -1387,7 +1387,7 @@ class ComputeAPITestCase(BaseTestCase):
             img = copy(self.fake_image)
             img['min_disk'] = 2
             return img
-        self.stubs.Set(fake_image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
 
         self.assertRaises(exception.InstanceTypeDiskTooSmall,
             self.compute_api.create, self.context, inst_type, None)
@@ -1410,7 +1410,7 @@ class ComputeAPITestCase(BaseTestCase):
             img['min_ram'] = 2
             img['min_disk'] = 2
             return img
-        self.stubs.Set(fake_image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
 
         (refs, resv_id) = self.compute_api.create(self.context,
                 inst_type, None)
@@ -1425,7 +1425,7 @@ class ComputeAPITestCase(BaseTestCase):
 
         def fake_show(*args):
             return copy(self.fake_image)
-        self.stubs.Set(fake_image._FakeImageService, 'show', fake_show)
+        self.stubs.Set(fake.image._FakeImageService, 'show', fake_show)
 
         (refs, resv_id) = self.compute_api.create(self.context,
                 inst_type, None)

@@ -26,7 +26,7 @@ from nova import log as logging
 from nova import utils
 
 
-LOG = logging.getLogger('nova.image.fake')
+LOG = logging.getLogger('nova.testing.fake.image')
 
 
 FLAGS = flags.FLAGS

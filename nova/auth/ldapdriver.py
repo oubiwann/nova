@@ -712,6 +712,6 @@ class FakeLdapDriver(LdapDriver):
     """Fake Ldap Auth driver"""
 
     def __init__(self):
-        import nova.auth.fakeldap
-        sys.modules['ldap'] = nova.auth.fakeldap
+        import nova.testing.fake.ldap
+        sys.modules['ldap'] = nova.testing.fake.ldap
         super(FakeLdapDriver, self).__init__()

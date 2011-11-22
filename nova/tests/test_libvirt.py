@@ -320,7 +320,7 @@ class LibvirtConnTestCase(test.TestCase):
         for key, val in kwargs.items():
             fake.__setattr__(key, val)
 
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
         self.flags(libvirt_vif_driver="nova.tests.fake_network.FakeVIFDriver")
 
         self.mox.StubOutWithMock(connection.LibvirtConnection, '_conn')
@@ -396,12 +396,12 @@ class LibvirtConnTestCase(test.TestCase):
 
     @test.skip_if(missing_libvirt(), "Test requires libvirt")
     def test_snapshot_in_ami_format(self):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
 
         # Start test
         image_service = utils.import_object(FLAGS.image_service)
 
-        # Assign different image_ref from nova/images/fakes for testing ami
+        # Assign different image_ref from nova/testing/fake for testing ami
         test_instance = copy.deepcopy(self.test_instance)
         test_instance["image_ref"] = 'c905cedb-7281-47e4-8a62-f26bc5fc4c77'
 
@@ -434,7 +434,7 @@ class LibvirtConnTestCase(test.TestCase):
 
     @test.skip_if(missing_libvirt(), "Test requires libvirt")
     def test_snapshot_in_raw_format(self):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
 
         # Start test
         image_service = utils.import_object(FLAGS.image_service)
@@ -468,7 +468,7 @@ class LibvirtConnTestCase(test.TestCase):
 
     @test.skip_if(missing_libvirt(), "Test requires libvirt")
     def test_snapshot_in_qcow2_format(self):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
         self.flags(snapshot_image_format='qcow2')
 
         # Start test
@@ -503,12 +503,12 @@ class LibvirtConnTestCase(test.TestCase):
 
     @test.skip_if(missing_libvirt(), "Test requires libvirt")
     def test_snapshot_no_image_architecture(self):
-        self.flags(image_service='nova.image.fake.FakeImageService')
+        self.flags(image_service='nova.testing.fake.image.FakeImageService')
 
         # Start test
         image_service = utils.import_object(FLAGS.image_service)
 
-        # Assign different image_ref from nova/images/fakes for
+        # Assign different image_ref from nova/testing/fake for
         # testing different base image
         test_instance = copy.deepcopy(self.test_instance)
         test_instance["image_ref"] = '76fa36fc-c930-4bf3-8c8a-ea2a2420deb6'
