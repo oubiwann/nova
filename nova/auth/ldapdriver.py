@@ -72,7 +72,7 @@ LOG = logging.getLogger("nova.ldapdriver")
 if FLAGS.memcached_servers:
     import memcache
 else:
-    from nova import fakememcache as memcache
+    from nova.testing.fake import memcache
 
 
 # TODO(vish): make an abstract base class with the same public methods
@@ -712,6 +712,6 @@ class FakeLdapDriver(LdapDriver):
     """Fake Ldap Auth driver"""
 
     def __init__(self):
-        import nova.auth.fakeldap
-        sys.modules['ldap'] = nova.auth.fakeldap
+        import nova.testing.fake.ldap
+        sys.modules['ldap'] = nova.testing.fake.ldap
         super(FakeLdapDriver, self).__init__()
